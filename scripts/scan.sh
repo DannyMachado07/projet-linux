@@ -39,4 +39,11 @@ pct_max_dossier=$(awk -v r="$max_fdossier" -v t="$fichier_tot" 'BEGIN {if (t > 0
 
 echo "moyenne de fichier par dossier : $moyenne"
 echo "maximum de fichier dans un dossier : $max_fdossier"
-echo "La part des fichiers dans le plus gros dossier : $pct_max_dossier"
+echo "La part des fichiers dans le plus gros dossier : $pct_max_dossier%"
+
+#Pourcentage de dossiers vides
+dossier_vide=$(find "$1" -mindepth 1 -type d -empty | wc -l)
+dossier_tot=$(find "$1" -mindepth 1 -type d | wc -l)
+pct_dossier_vide=$(awk -v r="$dossier_vide" -v t="$dossier_tot" 'BEGIN {if (t > 0) print r*100/t; else print 0}')
+
+echo "Pourcentage de dossier vide : $pct_dossier_vide%"
