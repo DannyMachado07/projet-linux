@@ -26,4 +26,17 @@ echo "Profondeur moyenne : $profondeur_moyenne"
 fichier_r=$(find "$1" -maxdepth 1 -type f | wc -l)
 fichier_tot=$(find "$1" -type f | wc -l)
 pct_racine=$(awk -v r="$fichier_r" -v t="$fichier_tot" 'BEGIN {if (t > 0) print r*100/t; else print 0}')
-echo "$pct_racine"
+echo "Pourcentage de fichier à la racine : $pct_racine%"
+
+#Moyenne de dossier par fichier
+stats=$(find "$1" -type d | while read -r d; do
+    find "$d" -maxdepth 1 -type f | wc -l
+done | awk '{sum+=$1; count++; if ($1 > max) max=$1} END {if (count > 0) print sum/count, max; else print 0, 0}')
+read moyenne max_fdossier <<< "$stats"
+pct_max_dossier=$(awk -v r="$max_fdossier" -v t="$fichier_tot" 'BEGIN {if (t > 0) print r*100/t; else print 0}')
+
+
+
+echo "moyenne de fichier par dossier : $moyenne"
+echo "maximum de fichier dans un dossier : $max_fdossier"
+echo "La part des fichiers dans le plus gros dossier : $pct_max_dossier"
