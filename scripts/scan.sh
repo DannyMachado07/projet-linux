@@ -47,3 +47,21 @@ dossier_tot=$(find "$1" -mindepth 1 -type d | wc -l)
 pct_dossier_vide=$(awk -v r="$dossier_vide" -v t="$dossier_tot" 'BEGIN {if (t > 0) print r*100/t; else print 0}')
 
 echo "Pourcentage de dossier vide : $pct_dossier_vide%"
+
+#Pourcentage des noms de dossier génériques
+generiques=("nouveau dossier" "new folder" "sans titre" "untitled" "divers" "autres" "misc" "tmp" "temp" "nouveau" "old" "backup" "archive" "stuff" "truc")
+nb_generiques=0
+while read -r d; do
+    nom=$(basename "$d")
+    for g in "${generiques[@]}"; do
+        if [ "${nom,,}" = "$g" ]; then
+            ((nb_generiques++))
+	    break
+        fi
+    done
+done < <(find "$1" -mindepth 1 -type d)
+
+pct_generiques=$(awk -v r="$nb_generiques" -v t="$dossier_tot" 'BEGIN {if (t > 0) print r*100/t; else print 0}')
+
+echo "Pourcentage des noms de dossier génériques : $pct_generiques%"
+
